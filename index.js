@@ -14,7 +14,7 @@ module.exports = {
 
     var PDFJS = new Funnel('bower_components/pdfjs-dist/build',{
         srcDir: '/',
-        include: ['pdf.js','pdf.worker.js'],
+        include: ['pdf.min.js','pdf.worker.min.js'],
         destDir: '/'
     });
 
@@ -39,33 +39,15 @@ module.exports = {
     return mergeTrees(trees);
   },
 
-  treeForPublic: function(tree) {
-    var trees = [];
-    trees.push(this._super.treeForPublic.apply(this, arguments));
-
-    var publicFiles = new Funnel(tree, {
-        srcDir: '/',
-        include: ['test.pdf'],
-        destDir: '/assets'
-    });
-
-    trees.push(publicFiles);
-
-    return mergeTrees(trees);
-  },
-
   included: function(app, parentAddon) {
 
     this._super.included.apply(this, arguments);
 
     var target = (parentAddon || app);
 
-    target.import(target.bowerDirectory + '/pdfjs-dist/build/pdf.js');
-    target.import(target.bowerDirectory + '/pdfjs-dist/build/pdf.worker.js');
+    target.import(target.bowerDirectory + '/pdfjs-dist/build/pdf.min.js');
+    target.import(target.bowerDirectory + '/pdfjs-dist/build/pdf.worker.min.js');
     target.import(target.bowerDirectory + '/pdfjs-dist/web/pdf_viewer.css');
     target.import(target.bowerDirectory + '/pdfjs-dist/web/pdf_viewer.js');
-
-    target.import('vendor/ember-pdfjs.css');
-
   }
 }

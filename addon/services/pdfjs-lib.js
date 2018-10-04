@@ -12,7 +12,7 @@ export default Service.extend({
 
     let addonConfig = appConfig.emberPdfjs;
 
-    this.PDFJS = PDFJS;
+    this.PDFJS = pdfjsLib;
     this.PDFJS.workerSrc = addonConfig.workerSrc;
   }
 });

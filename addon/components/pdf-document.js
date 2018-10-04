@@ -38,11 +38,14 @@ const { Promise } = Ember.RSVP;
 
 /* jshint undef: false */
 const {
-  PDFLinkService,
-  PDFViewer,
   PasswordResponses,
+} = pdfjsLib;
+
+const {
+  SimpleLinkService,
+  PDFViewer,
   PDFFindController
-} = PDFJS;
+} = pdfjsViewer;
 /* jshint undef: true */
 
 /*
@@ -135,14 +138,11 @@ export default Ember.Component.extend({
     let container = this.element.getElementsByClassName('pdfViewerContainer')[0];
     set(this, '_container', container);
 
-    let linkService = new PDFLinkService();
-    set(this, 'viewerManager.linkService', linkService);
+
     let viewer = new PDFViewer({
       container,
-      linkService: linkService
     });
     set(this, 'viewerManager.viewer', viewer);
-    linkService.setViewer(viewer);
     let findController = new PDFFindController({
       pdfViewer: viewer
     });
@@ -226,10 +226,8 @@ export default Ember.Component.extend({
         set(this, 'pdfDocument', pdfDocument);
         let viewer = get(this, 'viewerManager.viewer');
         viewer.setDocument(pdfDocument);
-        let linkService = get(this, 'viewerManager.linkService');
-        linkService.setDocument(pdfDocument);
-        set(this, 'pdfTotalPages', linkService.pagesCount);
-        set(this, 'pdfPage', linkService.page);
+        set(this, 'pdfTotalPages', viewer.pagesCount);
+        set(this, 'pdfPage', viewer.page);
       });
 
       set(this, 'loadingTask', loadingTask);

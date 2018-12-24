@@ -127,6 +127,17 @@ export default Ember.Component.extend({
   src: '',
 
   /**
+  * Error function when PDFJS encounters
+  * an error.
+  *
+  * @method  didInsertElement
+  * @return void
+  */
+  onError: function(e) {
+    console.warn(e)
+  },
+
+  /**
   * Runs as a hook in Ember when the element for this component
   * has been applied to the DOM.
   *
@@ -181,6 +192,9 @@ export default Ember.Component.extend({
     // What to do otherwise...? What if there is no `src`...
     if (get(this, 'src')) {
       this.send('load');
+    } else {
+      const loadError = new Error('Ember PDFJS load error - No src provided')
+      get(this, 'onError')(loadError)
     }
 
 
@@ -222,13 +236,13 @@ export default Ember.Component.extend({
         };
       }
 
-      loadingTask = loadingTask.then((pdfDocument) => {
+      loadingTask = loadingTask.promise.then((pdfDocument) => {
         set(this, 'pdfDocument', pdfDocument);
         let viewer = get(this, 'viewerManager.viewer');
         viewer.setDocument(pdfDocument);
         set(this, 'pdfTotalPages', viewer.pagesCount);
         set(this, 'pdfPage', viewer.page);
-      });
+      }).catch(get(this, 'onError'));
 
       set(this, 'loadingTask', loadingTask);
       return loadingTask;
